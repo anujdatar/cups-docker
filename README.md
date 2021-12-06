@@ -11,12 +11,12 @@ docker run -d -p 631:631 --device /dev/bus/usb --name cups anujdatar/cups
 Customizing your container
 ```sh
 docker run -d --name cups \
-	--restart unless-stopped
-	-p 631:631 \
-	--device /dev/bus/usb \
-	-e CUPSADMIN=batman \
-	-e CUPSPASSWORD=batcave_password \
-	-e TZ="America/Gotham"
+    --restart unless-stopped
+    -p 631:631 \
+    --device /dev/bus/usb \
+    -e CUPSADMIN=batman \
+    -e CUPSPASSWORD=batcave_password \
+    -e TZ="America/Gotham"
 ```
 > Note: :P make sure you use valid TZ string, this is just a joke. Also changing the default username and password is highly recommended.
 
@@ -38,18 +38,18 @@ Environment variables that can be changed to suit your needs, use the `-e` tag
 ```yaml
 version: "3"
 services:
-	cups:
-		image: anujdatar/cups
-		container_name: cups
-		restart: unless-stopped
-		ports:
-			- "631:631"
-		devices:
-			- /dev/bus/usb:/dev/bus/usb
-		environment:
-			- CUPSADMIN=batman
-			- CUPSPASSWORD=batcave_password
-			- TZ="America/Gotham"
+    cups:
+        image: anujdatar/cups
+        container_name: cups
+        restart: unless-stopped
+        ports:
+            - "631:631"
+        devices:
+            - /dev/bus/usb:/dev/bus/usb
+        environment:
+            - CUPSADMIN=batman
+            - CUPSPASSWORD=batcave_password
+            - TZ="America/Gotham"
 
 ```
 
