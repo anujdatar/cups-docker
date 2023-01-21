@@ -6,17 +6,19 @@ Run a CUPS print server on a remote machine to share USB printers over WiFi. Bui
 Quick start with default parameters
 ```sh
 docker run -d -p 631:631 --device /dev/bus/usb --name cups anujdatar/cups
-````
+```
 
 Customizing your container
 ```sh
 docker run -d --name cups \
-    --restart unless-stopped
+    --restart unless-stopped \
     -p 631:631 \
     --device /dev/bus/usb \
     -e CUPSADMIN=batman \
     -e CUPSPASSWORD=batcave_password \
-    -e TZ="America/Gotham"
+    -e TZ="America/Gotham" \
+    -v <persistent-config-folder>:/etc/cups \
+    anujdatar/cups
 ```
 > Note: :P make sure you use valid TZ string, this is just a joke. Also changing the default username and password is highly recommended.
 
@@ -26,6 +28,7 @@ docker run -d --name cups \
 
 #### Optional parameters
 - `name` -> whatever you want to call your docker image. using `cups` in the example above.
+- `volume` -> adds a persistent volume for CUPS config files if you need to migrate or start a new container with the same settings
 
 Environment variables that can be changed to suit your needs, use the `-e` tag
 | # | Parameter    | Default            | Type   | Description                       |
@@ -50,7 +53,8 @@ services:
             - CUPSADMIN=batman
             - CUPSPASSWORD=batcave_password
             - TZ="America/Gotham"
-
+        volumes:
+            - <persistent-config-path>:/etc/cups
 ```
 
 ## Server Administration
@@ -60,7 +64,3 @@ If you are running this on your PC, i.e. not on a headless server, you should be
 
 ## Thanks
 Based on the work done by **RagingTiger**: [https://github.com/RagingTiger/cups-airprint](https://github.com/RagingTiger/cups-airprint)
-
-
-## TODO
-Make CUPS configs persistent, in case you need to delete container or migrate to new system
