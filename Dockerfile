@@ -37,6 +37,10 @@ RUN sed -i 's/Listen localhost:631/Listen 0.0.0.0:631/' /etc/cups/cupsd.conf && 
     echo "ServerAlias *" >> /etc/cups/cupsd.conf && \
     echo "DefaultEncryption Never" >> /etc/cups/cupsd.conf
 
+# back up cups configs in case used does not add their own
+RUN cp -rp /etc/cups /etc/cups-bak
+VOLUME [ "/etc/cups" ]
+
 ADD entrypoint.sh /
 RUN chmod +x /entrypoint.sh
 
