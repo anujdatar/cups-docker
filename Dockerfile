@@ -1,4 +1,4 @@
-FROM ubuntu:focal
+FROM ubuntu:jammy
 
 # ENV variables
 ENV DEBIAN_FRONTEND noninteractive
