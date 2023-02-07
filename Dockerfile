@@ -6,11 +6,13 @@ ENV TZ "America/New_York"
 ENV CUPSADMIN admin
 ENV CUPSPASSWORD password
 
-LABEL maintainer="Anuj Datar <anuj.datar@gmail.com>"
-LABEL version="1.0"
-LABEL name="anujdatar/cups"
-LABEL description="CUPS docker image"
-LABEL repository="https://github.com/anujdatar/cups-docker"
+
+LABEL org.opencontainers.image.source="https://github.com/anujdatar/cups-docker"
+LABEL org.opencontainers.image.description="CUPS Printer Server"
+LABEL org.opencontainers.image.author="Anuj Datar <anuj.datar@gmail.com>"
+LABEL org.opencontainers.image.url="https://github.com/anujdatar/cups-docker/blob/main/README.md"
+LABEL org.opencontainers.image.licenses=MIT
+LABEL org.opencontainers.image.version=23.02.07
 
 
 # Install dependencies
