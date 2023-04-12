@@ -19,13 +19,9 @@ jobs:
       contents: read
       pull-requests: write
 
-  code:
-    uses: ./.github/workflows/code.yml
-    needs: [triage]
-
   build:
     uses: ./.github/workflows/build.yml
-    needs: [code]
+    needs: [triage]
 
   integration:
     uses: ./.github/workflows/integration.yml
