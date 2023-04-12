@@ -1,0 +1,56 @@
+---
+name: "CI & CD Pipeline "
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*.*.*'
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+    branches:
+      - main
+jobs:
+  triage:
+    uses: ./.github/workflows/triage.yml
+    permissions:
+      contents: read
+      pull-requests: write
+
+  code:
+    uses: ./.github/workflows/code.yml
+    needs: [triage]
+
+  build:
+    uses: ./.github/workflows/build.yml
+    needs: [code]
+
+  integration:
+    uses: ./.github/workflows/integration.yml
+    needs: [build]
+    permissions:
+      contents: read
+      packages: write
+      security-events: write
+
+  publish:
+    uses: ./.github/workflows/publish.yml
+    needs: [integration]
+    permissions:
+      packages: write
+
+  release:
+    uses: ./.github/workflows/release.yml
+    needs: [integration,publish]
+    permissions:
+      contents: write
+      pull-requests: read
+
+  notes:
+    uses: ./.github/workflows/notes.yml
+    needs: [release]
+    permissions:
+      contents: write
+      pull-requests: read
