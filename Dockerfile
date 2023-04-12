@@ -1,4 +1,4 @@
-FROM ubuntu:jammy
+FROM debian:stable-20230411-slim
 
 # ENV variables
 ENV DEBIAN_FRONTEND noninteractive
@@ -17,7 +17,7 @@ LABEL org.opencontainers.image.version=23.02.07
 
 # Install dependencies
 RUN apt-get update -qqy && apt-get upgrade -qqy \
-    && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -qqy \
+    && apt-get install --no-install-recommends -qqy \
     apt-utils \
     cups \
     cups-filters \
