@@ -19,34 +19,16 @@ jobs:
       contents: read
       pull-requests: write
 
-  build:
-    uses: ./.github/workflows/build.yml
-    needs: [triage]
-
   integration:
     uses: ./.github/workflows/integration.yml
-    needs: [build]
+    needs: [triage]
     permissions:
       contents: read
       packages: write
       security-events: write
 
   publish:
-    uses: ./.github/workflows/publish.yml
+    uses: ./.github/workflows/docker-publish.yml
     needs: [integration]
     permissions:
       packages: write
-
-  release:
-    uses: ./.github/workflows/release.yml
-    needs: [integration,publish]
-    permissions:
-      contents: write
-      pull-requests: read
-
-  notes:
-    uses: ./.github/workflows/notes.yml
-    needs: [release]
-    permissions:
-      contents: write
-      pull-requests: read
