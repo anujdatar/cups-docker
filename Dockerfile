@@ -43,7 +43,7 @@ RUN sed -i 's/Listen localhost:631/Listen 0.0.0.0:631/' /etc/cups/cupsd.conf && 
 RUN cp -rp /etc/cups /etc/cups-bak
 VOLUME [ "/etc/cups" ]
 
-ADD entrypoint.sh /
+COPY entrypoint.sh /
 RUN chmod +x /entrypoint.sh
 
 CMD ["/entrypoint.sh"]
