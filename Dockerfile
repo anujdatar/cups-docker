@@ -1,4 +1,4 @@
-FROM ubuntu:jammy
+FROM debian:stable-20230411-slim
 
 # ENV variables
 ENV DEBIAN_FRONTEND noninteractive
@@ -16,17 +16,22 @@ LABEL org.opencontainers.image.version=23.02.07
 
 
 # Install dependencies
-RUN apt-get update -qq  && apt-get upgrade -qqy && \
-    apt-get install -qqy apt-utils usbutils \
-    cups cups-filters \
+RUN apt-get update -qqy && apt-get upgrade -qqy \
+    && apt-get install --no-install-recommends -qqy \
+    apt-utils \
+    cups \
+    cups-filters \
+    foomatic-db-compressed-ppds \
+    hp-ppd \
+    hpijs-ppds \
+    hplip \
+    openprinting-ppds \
     printer-driver-all \
     printer-driver-cups-pdf \
     printer-driver-foo2zjs \
-    foomatic-db-compressed-ppds \
-    openprinting-ppds \
-    hpijs-ppds \
-    hp-ppd \
-    hplip
+    usbutils \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 EXPOSE 631
 
@@ -43,7 +48,7 @@ RUN sed -i 's/Listen localhost:631/Listen 0.0.0.0:631/' /etc/cups/cupsd.conf && 
 RUN cp -rp /etc/cups /etc/cups-bak
 VOLUME [ "/etc/cups" ]
 
-ADD entrypoint.sh /
+COPY entrypoint.sh /
 RUN chmod +x /entrypoint.sh
 
 CMD ["/entrypoint.sh"]
