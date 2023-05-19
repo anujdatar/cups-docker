@@ -16,9 +16,12 @@ LABEL org.opencontainers.image.version=23.02.07
 
 
 # Install dependencies
-RUN apt-get update -qq  && apt-get upgrade -qqy && \
-    apt-get install -qqy apt-utils usbutils \
-    cups cups-filters \
+RUN apt-get update -qq  && apt-get upgrade -qqy \
+    && apt-get install --no-install-recommends -qqy \
+    apt-utils \
+    usbutils \
+    cups \
+    cups-filters \
     printer-driver-all \
     printer-driver-cups-pdf \
     printer-driver-foo2zjs \
