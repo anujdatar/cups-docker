@@ -29,7 +29,9 @@ RUN apt-get update -qq  && apt-get upgrade -qqy \
     openprinting-ppds \
     hpijs-ppds \
     hp-ppd \
-    hplip
+    hplip \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 EXPOSE 631
 
