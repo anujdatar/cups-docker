@@ -1,4 +1,4 @@
-FROM ubuntu:jammy
+FROM debian:stable-slim
 
 # ENV variables
 ENV DEBIAN_FRONTEND noninteractive
