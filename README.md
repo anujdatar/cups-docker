@@ -2,6 +2,10 @@
 
 Run a CUPS print server on a remote machine to share USB printers over WiFi. Built primarily to use with Raspberry Pis as a headless server, but there is no reason this wouldn't work on `amd64` machines. Tested and confirmed working on a Raspberry Pi 3B+ (`arm/v7`) and Raspberry Pi 4 (`arm64/v8`).
 
+Container packages available from Docker Hub and Github Container Registry (ghcr.io)
+  - Docker Hub Image: `anujdatar/cups`
+  - GHCR Image: `ghcr.io/anujdatar/cups`
+
 ## Usage
 Quick start with default parameters
 ```sh
