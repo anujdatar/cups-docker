@@ -68,7 +68,3 @@ If you are running this on your PC, i.e. not on a headless server, you should be
 
 ## Thanks
 Based on the work done by **RagingTiger**: [https://github.com/RagingTiger/cups-airprint](https://github.com/RagingTiger/cups-airprint)
-
-## ToDo
-1. try switching to debian to see if container size reduces
-2. try alpine linux base
