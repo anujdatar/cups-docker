@@ -29,10 +29,12 @@ RUN apt-get update -qq  && apt-get upgrade -qqy \
     hpijs-ppds \
     hp-ppd \
     hplip \
+    avahi-daemon \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 EXPOSE 631
+EXPOSE 5353/udp
 
 # Baked-in config file changes
 RUN sed -i 's/Listen localhost:631/Listen 0.0.0.0:631/' /etc/cups/cupsd.conf && \
