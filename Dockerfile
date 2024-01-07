@@ -1,5 +1,8 @@
 FROM debian:stable-slim
 
+# Build arguments
+ARG S6_OVERLAY_VERSION=3.1.6.2
+
 # ENV variables
 ENV DEBIAN_FRONTEND noninteractive
 ENV TZ "America/New_York"
@@ -13,23 +16,36 @@ LABEL org.opencontainers.image.author="Anuj Datar <anuj.datar@gmail.com>"
 LABEL org.opencontainers.image.url="https://github.com/anujdatar/cups-docker/blob/main/README.md"
 LABEL org.opencontainers.image.licenses=MIT
 
+# Install s6-overlay
+ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz /tmp
+ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-x86_64.tar.xz /tmp
+ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-symlinks-noarch.tar.xz /tmp
+ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-symlinks-arch.tar.xz /tmp
 
 # Install dependencies
-RUN apt-get update -qq  && apt-get upgrade -qqy \
+RUN apt-get update -qq && apt-get upgrade -qqy \
     && apt-get install -qqy \
-    apt-utils \
-    usbutils \
-    cups \
-    cups-filters \
-    printer-driver-all \
-    printer-driver-cups-pdf \
-    printer-driver-foo2zjs \
-    foomatic-db-compressed-ppds \
-    openprinting-ppds \
-    hpijs-ppds \
-    hp-ppd \
-    hplip \
-    avahi-daemon \
+        apt-utils \
+        usbutils \
+        cups \
+        cups-filters \
+        printer-driver-all \
+        printer-driver-cups-pdf \
+        printer-driver-foo2zjs \
+        foomatic-db-compressed-ppds \
+        openprinting-ppds \
+        hpijs-ppds \
+        hp-ppd \
+        hplip \
+        avahi-daemon \
+    && tar -C / -Jxpf /tmp/s6-overlay-noarch.tar.xz \
+    && tar -C / -Jxpf /tmp/s6-overlay-x86_64.tar.xz \
+    && tar -C / -Jxpf /tmp/s6-overlay-symlinks-noarch.tar.xz \
+    && tar -C / -Jxpf /tmp/s6-overlay-symlinks-arch.tar.xz \
+    && rm /tmp/s6-overlay-noarch.tar.xz \
+    && rm /tmp/s6-overlay-x86_64.tar.xz \
+    && rm /tmp/s6-overlay-symlinks-noarch.tar.xz \
+    && rm /tmp/s6-overlay-symlinks-arch.tar.xz \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -49,7 +65,9 @@ RUN sed -i 's/Listen localhost:631/Listen 0.0.0.0:631/' /etc/cups/cupsd.conf && 
 RUN cp -rp /etc/cups /etc/cups-bak
 VOLUME [ "/etc/cups" ]
 
-COPY entrypoint.sh /
-RUN chmod +x /entrypoint.sh
+# Add s6 service definitions
+COPY ./services /etc/services.d
+COPY entrypoint.sh /etc/cont-init.d/00-entrypoint.sh
 
-CMD ["/entrypoint.sh"]
+# Command to start s6-init
+CMD ["/init"]

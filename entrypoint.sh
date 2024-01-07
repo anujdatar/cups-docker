@@ -1,4 +1,4 @@
-#!/bin/bash -ex
+#!/usr/bin/with-contenv bash
 
 if [ $(grep -ci $CUPSADMIN /etc/shadow) -eq 0 ]; then
     useradd -r -G lpadmin -M $CUPSADMIN
@@ -15,5 +15,3 @@ fi
 if [ ! -f /etc/cups/cupsd.conf ]; then
     cp -rpn /etc/cups-bak/* /etc/cups/
 fi
-
-exec /usr/sbin/cupsd -f
