@@ -21,6 +21,7 @@ docker run -d --name cups \
     -e CUPSADMIN=batman \
     -e CUPSPASSWORD=batcave_password \
     -e TZ="America/Gotham" \
+    --hostname cups-docker \
     -v <persistent-config-folder>:/etc/cups \
     anujdatar/cups
 ```
@@ -29,6 +30,7 @@ docker run -d --name cups \
 ### Parameters and defaults
 - `port` -> default cups network port `631:631`. Change not recommended unless you know what you're doing
 - `device` -> used to give docker access to USB printer. Default passes the whole USB bus `/dev/bus/usb`, in case you change the USB port on your device later. change to specific USB port if it will always be fixed, for eg. `/dev/bus/usb/001/005`.
+- `hostname` -> with dnsmasq auto-discovery, setting the hostname make it easier to identify each instance.
 
 #### Optional parameters
 - `name` -> whatever you want to call your docker image. using `cups` in the example above.
@@ -49,6 +51,7 @@ services:
         image: anujdatar/cups
         container_name: cups
         restart: unless-stopped
+        hostname: cups-docker
         ports:
             - "631:631"
         devices:

@@ -1,5 +1,9 @@
 FROM debian:stable-slim
 
+# Build arguments
+ARG S6_OVERLAY_VERSION=3.1.6.2
+ARG TARGETARCH
+
 # ENV variables
 ENV DEBIAN_FRONTEND noninteractive
 ENV TZ "America/New_York"
@@ -13,23 +17,27 @@ LABEL org.opencontainers.image.author="Anuj Datar <anuj.datar@gmail.com>"
 LABEL org.opencontainers.image.url="https://github.com/anujdatar/cups-docker/blob/main/README.md"
 LABEL org.opencontainers.image.licenses=MIT
 
+# Add script for installing s6-overlay
+COPY ./scripts /tmp/scripts
 
 # Install dependencies
-RUN apt-get update -qq  && apt-get upgrade -qqy \
+RUN apt-get update -qq && apt-get upgrade -qqy \
     && apt-get install -qqy \
-    apt-utils \
-    usbutils \
-    cups \
-    cups-filters \
-    printer-driver-all \
-    printer-driver-cups-pdf \
-    printer-driver-foo2zjs \
-    foomatic-db-compressed-ppds \
-    openprinting-ppds \
-    hpijs-ppds \
-    hp-ppd \
-    hplip \
-    avahi-daemon \
+        apt-utils \
+        usbutils \
+        cups \
+        cups-filters \
+        printer-driver-all \
+        printer-driver-cups-pdf \
+        printer-driver-foo2zjs \
+        foomatic-db-compressed-ppds \
+        openprinting-ppds \
+        hpijs-ppds \
+        hp-ppd \
+        hplip \
+        avahi-daemon \
+    && /tmp/scripts/install-s6-overlay.sh \
+    && rm -rf /tmp/scripts \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -49,7 +57,9 @@ RUN sed -i 's/Listen localhost:631/Listen 0.0.0.0:631/' /etc/cups/cupsd.conf && 
 RUN cp -rp /etc/cups /etc/cups-bak
 VOLUME [ "/etc/cups" ]
 
-COPY entrypoint.sh /
-RUN chmod +x /entrypoint.sh
+# Add s6 service definitions
+COPY ./services /etc/services.d
+COPY ./cont-init /etc/cont-init.d
 
-CMD ["/entrypoint.sh"]
+# Command to start s6-init
+CMD ["/init"]
