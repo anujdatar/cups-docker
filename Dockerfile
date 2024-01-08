@@ -2,6 +2,7 @@ FROM debian:stable-slim
 
 # Build arguments
 ARG S6_OVERLAY_VERSION=3.1.6.2
+ARG TARGETARCH
 
 # ENV variables
 ENV DEBIAN_FRONTEND noninteractive
@@ -16,11 +17,8 @@ LABEL org.opencontainers.image.author="Anuj Datar <anuj.datar@gmail.com>"
 LABEL org.opencontainers.image.url="https://github.com/anujdatar/cups-docker/blob/main/README.md"
 LABEL org.opencontainers.image.licenses=MIT
 
-# Install s6-overlay
-ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz /tmp
-ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-x86_64.tar.xz /tmp
-ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-symlinks-noarch.tar.xz /tmp
-ADD https://github.com/just-containers/s6-overlay/releases/download/v${S6_OVERLAY_VERSION}/s6-overlay-symlinks-arch.tar.xz /tmp
+# Add script for installing s6-overlay
+COPY ./scripts /tmp/scripts
 
 # Install dependencies
 RUN apt-get update -qq && apt-get upgrade -qqy \
@@ -38,14 +36,8 @@ RUN apt-get update -qq && apt-get upgrade -qqy \
         hp-ppd \
         hplip \
         avahi-daemon \
-    && tar -C / -Jxpf /tmp/s6-overlay-noarch.tar.xz \
-    && tar -C / -Jxpf /tmp/s6-overlay-x86_64.tar.xz \
-    && tar -C / -Jxpf /tmp/s6-overlay-symlinks-noarch.tar.xz \
-    && tar -C / -Jxpf /tmp/s6-overlay-symlinks-arch.tar.xz \
-    && rm /tmp/s6-overlay-noarch.tar.xz \
-    && rm /tmp/s6-overlay-x86_64.tar.xz \
-    && rm /tmp/s6-overlay-symlinks-noarch.tar.xz \
-    && rm /tmp/s6-overlay-symlinks-arch.tar.xz \
+    && /tmp/scripts/install-s6-overlay.sh \
+    && rm -rf /tmp/scripts \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
