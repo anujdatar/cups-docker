@@ -1,2 +1,8 @@
-#!/usr/bin/execlineb -P
-/usr/sbin/avahi-daemon
+#!/usr/bin/with-contenv sh
+
+until [ -e /var/run/dbus/system_bus_socket ]; do
+    sleep 1s
+done
+
+echo "Starting Avahi daemon"
+exec /usr/sbin/avahi-daemon --no-chroot

@@ -67,7 +67,7 @@ VOLUME [ "/etc/cups" ]
 
 # Add s6 service definitions
 COPY ./services /etc/services.d
-COPY entrypoint.sh /etc/cont-init.d/00-entrypoint.sh
+COPY ./cont-init /etc/cont-init.d
 
 # Command to start s6-init
 CMD ["/init"]
