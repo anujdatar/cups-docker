@@ -16,4 +16,7 @@ if [ ! -f /etc/cups/cupsd.conf ]; then
     cp -rpn /etc/cups-bak/* /etc/cups/
 fi
 
+/printer-update.sh &
+avahi-daemon &
 exec /usr/sbin/cupsd -f
+

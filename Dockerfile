@@ -30,6 +30,8 @@ RUN apt-get update -qq  && apt-get upgrade -qqy \
     hp-ppd \
     hplip \
     avahi-daemon \
+    inotify-tools \
+    python3-cups \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -43,13 +45,15 @@ RUN sed -i 's/Listen localhost:631/Listen 0.0.0.0:631/' /etc/cups/cupsd.conf && 
     sed -i 's/<Location \/admin>/<Location \/admin>\n  Allow All\n  Require user @SYSTEM/' /etc/cups/cupsd.conf && \
     sed -i 's/<Location \/admin\/conf>/<Location \/admin\/conf>\n  Allow All/' /etc/cups/cupsd.conf && \
     echo "ServerAlias *" >> /etc/cups/cupsd.conf && \
-    echo "DefaultEncryption Never" >> /etc/cups/cupsd.conf
+    echo "DefaultEncryption Never" >> /etc/cups/cupsd.conf && \
+    sed -i 's/#enable-dbus=yes/enable-dbus=no/' /etc/avahi/avahi-daemon.conf
 
 # back up cups configs in case used does not add their own
 RUN cp -rp /etc/cups /etc/cups-bak
 VOLUME [ "/etc/cups" ]
+VOLUME [ "/etc/avahi/services" ]
 
-COPY entrypoint.sh /
-RUN chmod +x /entrypoint.sh
+COPY entrypoint.sh airprint-generate.py printer-update.sh /
+RUN chmod +x /entrypoint.sh /airprint-generate.py /printer-update.sh
 
 CMD ["/entrypoint.sh"]
