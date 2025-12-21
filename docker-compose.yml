@@ -1,0 +1,44 @@
+version: "3.8"
+
+services:
+  cups:
+    image: flags8192/cups
+    # To build from source instead:
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile
+    container_name: cups
+    restart: unless-stopped
+    ports:
+      - "631:631/tcp"      # CUPS web interface and IPP
+      - "5353:5353/udp"    # Avahi/mDNS for network printer discovery
+    devices:
+      - /dev/bus/usb:/dev/bus/usb  # USB printer access
+    environment:
+      - CUPSADMIN=admin
+      - CUPSPASSWORD=password
+      - TZ=Europe/Moscow
+      - CUPS_LOG_LEVEL=warn
+    volumes:
+      - cups-config:/etc/cups  # Persistent CUPS configuration
+    healthcheck:
+      test: ["CMD", "lpstat", "-r"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    # Uncomment for privileged mode (may be needed for some USB devices):
+    # privileged: true
+    # Or use specific capabilities:
+    # cap_add:
+    #   - SYS_ADMIN
+
+volumes:
+  cups-config:
+    driver: local
+
+# Example for HP LaserJet 1018 specific configuration:
+# After starting the container, access http://localhost:631
+# and add the printer through the web interface, or use:
+# docker exec -it cups lpadmin -p HP-LaserJet-1018 -E -v usb://HP/LaserJet%201018 -m raw
+
